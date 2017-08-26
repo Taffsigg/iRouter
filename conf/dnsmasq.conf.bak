@@ -1,2 +1,1 @@
 dhcp-range=interface:wlan0,172.24.1.2,172.24.1.254,1h
-dhcp-range=interface:wlan1,172.25.1.2,172.25.1.254,1h

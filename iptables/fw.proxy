@@ -4,12 +4,13 @@
 # (c) 2006, nixCraft under GNU/GPL v2.0+
 # -------------------------------------------------------------------------------------
 # squid server IP
-SQUID_SERVER="10.42.0.60"
+SQUID_SERVER="10.30.3.113"
 # Interface connected to Internet
 INTERNET="eth0"
 # Interface connected to LAN
 LAN_IN="wlan0"
 LAN_IN2="tun0"
+LAN_IN3="wlan1"
 # Squid port
 SQUID_PORT="3128"
 
@@ -39,17 +40,20 @@ iptables -A INPUT -i $INTERNET -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables --table nat --append POSTROUTING --out-interface $INTERNET -j MASQUERADE
 iptables --append FORWARD --in-interface $LAN_IN -j ACCEPT
 iptables --append FORWARD --in-interface $LAN_IN2 -j ACCEPT
+iptables --append FORWARD --in-interface $LAN_IN3 -j ACCEPT
 # unlimited access to LAN
 iptables -A INPUT -i $LAN_IN -j ACCEPT
 iptables -A OUTPUT -o $LAN_IN -j ACCEPT
 iptables -A INPUT -i $LAN_IN2 -j ACCEPT
 iptables -A OUTPUT -o $LAN_IN2 -j ACCEPT
+iptables -A INPUT -i $LAN_IN3 -j ACCEPT
+iptables -A OUTPUT -o $LAN_IN3 -j ACCEPT
 # DNAT port 80 request comming from LAN systems to squid 3128 ($SQUID_PORT) aka transparent proxy
 iptables -t nat -A PREROUTING -i $LAN_IN -p tcp --dport 80 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
 #iptables -t nat -A PREROUTING -i $LAN_IN -p tcp --dport 443 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
 iptables -t nat -A PREROUTING -i $LAN_IN2 -p tcp --dport 80 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
 #iptables -t nat -A PREROUTING -i $LAN_IN2 -p tcp --dport 443 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
-iptables -t nat -A PREROUTING -i $LAN_IN2 -p udp --dport 80 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
+iptables -t nat -A PREROUTING -i $LAN_IN3 -p udp --dport 80 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
 #iptables -t nat -A PREROUTING -i $LAN_IN2 -p udp --dport 443 -j DNAT --to $SQUID_SERVER:$SQUID_PORT
 # if it is same system
 iptables -t nat -A PREROUTING -i $INTERNET -p tcp --dport 80 -j REDIRECT --to-port $SQUID_PORT

@@ -10,13 +10,7 @@ auto lo
 iface lo inet loopback
 
 allow-hotplug eth0
-iface eth0 inet static
-	address 10.30.3.113
-	netmask 255.255.255.0
-	network 10.30.3.0
-	broadcast 10.30.3.255
-	gateway 10.30.3.254
-	dns-nameservers 192.168.1.94 192.168.1.1
+iface eth0 inet dhcp
 
 #allow-hotplug wlan0
 #iface wlan0 inet manual
